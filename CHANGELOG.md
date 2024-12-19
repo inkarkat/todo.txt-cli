@@ -7,6 +7,22 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- listpri action allows concatenation of multiple priorities [-ranges]
+- replace action completely merges any combination of priority / date with existing ([#386])
+- Check for broken symlinks to custom actions and complain ([#359])
+
+### Changed
+
+- Add .sh extension to completion script
+- Reuse the todo.sh alias for completion
+- Return from user prompt without requiring Enter ([#354])
+- Default to user writable directory in config ([#148])
+
+### Fixed
+- Fix problem with spaces in directory path ([#276])
+- pri action takes multiple items + priorities on single run ([#346])
+
 ## [2.12.0] - 2020-08-11
 
 ### Added
