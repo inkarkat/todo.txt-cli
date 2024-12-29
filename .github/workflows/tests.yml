@@ -15,6 +15,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
     - uses: actions/checkout@v4
+    - run: sudo apt-get update && sudo apt-get install -y bsdmainutils
     - run: make
     - run: make dist
     - run: make test
