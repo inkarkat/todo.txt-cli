@@ -6,8 +6,8 @@ This test checks todo_completion of actions for usage help.
 '
 . ./actions-test-lib.sh
 . ./test-lib.sh
-make_action "zany"
-make_action "aardvark"
+make_action zany
+make_action aardvark
 
 readonly ACTIONS='add a addto addm append app archive command del rm depri dp do help list ls listaddons listall lsa listcon lsc listfile lf listpri lsp listproj lsprj move mv prepend prep pri p replace report shorthelp'
 readonly ADDONS='aardvark zany'
