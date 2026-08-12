@@ -34,7 +34,7 @@ makeCustomActions()
     # in order to ensure completion
     for contained in $CONTAINED
     do
-        make_action_in_folder "$contained" "$contained"
+        make_action_in_folder container "$contained"
     done
 
     set +e
@@ -47,9 +47,9 @@ removeCustomActions()
 
     for contained in $CONTAINED
     do
-        rm "$actionsDir/$contained/$contained"
-        rmdir "$actionsDir/$contained"
+        rm "$actionsDir/container/$contained"
     done
+    rmdir "$actionsDir/container"
 
     rm "$actionsDir/"*
     rmdir "$actionsDir"
