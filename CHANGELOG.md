@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - `TODOTXT_DEFAULT_ACTION` now also allows action parameters ([#159], [#407])
+- Custom actions can now be in any subdir, not just `action/action` ([#494])
 
 ### Changed
 - Improve compatibility with non-GNU sed command on BSD/Busybox ([#447])
@@ -559,3 +560,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#452]: https://github.com/todotxt/todo.txt-cli/pull/452
 [#447]: https://github.com/todotxt/todo.txt-cli/pull/447
 [#460]: https://github.com/todotxt/todo.txt-cli/pull/460
+[#494]: https://github.com/todotxt/todo.txt-cli/pull/494
