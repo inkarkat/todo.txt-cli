@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 - `TODOTXT_DEFAULT_ACTION` now also allows action parameters ([#159], [#407])
+- Custom actions can now be in any subdir, not just `action/action` ([#214])
 
 ### Fixed
 - `make install` installed the Bash completion in the wrong directory ([#452])
@@ -523,6 +524,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#159]: https://github.com/todotxt/todo.txt-cli/pull/159
 [#160]: https://github.com/todotxt/todo.txt-cli/pull/160
 [#169]: https://github.com/todotxt/todo.txt-cli/pull/169
+[#214]: https://github.com/todotxt/todo.txt-cli/issue/214
 [#217]: https://github.com/todotxt/todo.txt-cli/pull/217
 [#218]: https://github.com/todotxt/todo.txt-cli/pull/218
 [#219]: https://github.com/todotxt/todo.txt-cli/pull/219
