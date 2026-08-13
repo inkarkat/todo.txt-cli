@@ -10,6 +10,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Added
 - `TODOTXT_DEFAULT_ACTION` now also allows action parameters ([#159], [#407])
 - Custom actions can now be in any subdir, not just `action/action` ([#214])
+- `TODOTXT_ACTIONS_DIR` now allows multiple, :-separated directories for when a
+  single subdirectory is not enough to distribute custom actions
 
 ### Fixed
 - `make install` installed the Bash completion in the wrong directory ([#452])
