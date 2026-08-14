@@ -1075,8 +1075,10 @@ handleCustomAction()
     return 1
 }
 
+# shellcheck disable=SC2120
 listCustomActions()
 {
+    local actionsGlob="$1"; shift
     local actionBaseDirs actionBaseDir hasExistingActionDir action
     IFS=: read -r -a actionBaseDirs <<<"$TODO_ACTIONS_DIR"
     {
@@ -1086,7 +1088,12 @@ listCustomActions()
             for action in */* *
             do
                 if [ -f "$action" ] && [ -x "$action" ]; then
-                    echo "${action##*/}"
+                    if [ -n "$actionsGlob" ]; then
+                        # shellcheck disable=SC2053
+                        [[ "${action##*/}" = $actionsGlob ]] && echo "$actionBaseDir/$action"
+                    else
+                        echo "${action##*/}"
+                    fi
                 fi
             done
         done
@@ -1095,7 +1102,7 @@ listCustomActions()
     return "${PIPESTATUS[0]}"
 }
 
-export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
+export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die listCustomActions
 
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
