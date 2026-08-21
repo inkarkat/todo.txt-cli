@@ -288,10 +288,9 @@ actionsHelp()
 
 		    move NR DEST [SRC]
 		    mv NR DEST [SRC]
-		      Moves the line NR from source text file (SRC) to destination text file (DEST).
-		      Both source and destination file must be located in the directory defined
-		      in the configuration directory.  When SRC is not defined
-		      it's by default todo.txt.
+		      Moves the line NR from source file (SRC) to destination file (DEST).
+		      Both files must be located in the todo.txt directory. SRC defaults to
+		      todo.txt.
 
 		    prepend NR "TEXT TO PREPEND"
 		    prep NR "TEXT TO PREPEND"
@@ -358,20 +357,42 @@ die()
     exit 1
 }
 
-confirm()
+getKeyFromUser()
 {
-    [ "$TODOTXT_FORCE" = 0 ] || return 0
-
-    local readArgs=(-e -r)
+    local readArgs=()
     if [ -n "${BASH_VERSINFO:-}" ] && ((BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 1) )); then
         readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
     fi
+    [ $# -eq 0 ] || readArgs+=(-p "${1:?}")
     local answer
-    read -rp "${1:?}? (y/n) " "${readArgs[@]}" answer
-    echo
-    [ "$answer" = "y" ]
+    read -e -r "${readArgs[@]}" answer
+    echo >&2
+    printf %s "$answer"
 }
 
+confirm()
+{
+    [ "$TODOTXT_FORCE" = 0 ] || return 0
+    [ "$(getKeyFromUser "${1:?}? (y/n) ")" = 'y' ]
+}
+
+readinput()
+{
+    local readArgs=()
+    [ -n "${1?}" ] && readArgs=(-p "${1}: ")
+    shift
+    if [ "$1" = -i ]; then
+        readArgs+=("$1" "${2?}")
+        shift; shift
+    fi
+
+    if [[ -z "$*" && $TODOTXT_FORCE = 0 ]]; then
+        read -e -r "${readArgs[@]}" input
+    else
+        input=$*
+    fi
+    [ -n "$input" ]
+}
 cleaninput()
 {
     # Parameters:    When $1 = "for sed", performs additional escaping for use
@@ -449,11 +470,7 @@ replaceOrPrepend()
   shift; item=$1; shift
   getTodo "$item"
 
-  if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-    read -p "$querytext" -r -i "$todo" -e input
-  else
-    input=$*
-  fi
+  readinput "$querytext" -i "$todo" "$@"
 
   # Retrieve existing priority and prepended date
   local -r priAndDateExpr='^\((.) \)\{0,1\}\([0-9]\{2,4\}-[0-9]\{2\}-[0-9]\{2\} \)\{0,1\}'
@@ -1107,7 +1124,7 @@ listCustomActions()
     return "${PIPESTATUS[0]}"
 }
 
-export -f _applyPlainMode cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die listCustomActions
+export -f _applyPlainMode getKeyFromUser confirm readinput cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die listCustomActions
 
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
@@ -1132,24 +1149,14 @@ fi
 # Only run if $action isn't found in $TODO_ACTIONS_DIR
 case $action in
 "add" | "a")
-    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Add: " -e -r input
-    else
-        [ -z "$2" ] && die "usage: $TODO_SH add \"TODO ITEM\""
-        shift
-        input=$*
-    fi
+    shift
+    readinput 'Add' "$@" || die "usage: $TODO_SH add \"TODO ITEM\""
     _addto "$TODO_FILE" "$input"
     ;;
 
 "addm")
-    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Add: " -e -r input
-    else
-        [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
-        shift
-        input=$*
-    fi
+    shift
+    readinput 'Add' "$@" || die "usage: $TODO_SH addm \"TODO ITEM\""
 
     # Set Internal Field Seperator as newline so we can
     # loop across multiple lines
@@ -1184,12 +1191,9 @@ case $action in
     shift; item=$1; shift
     getTodo "$item"
 
-    if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Append: " -e -r input
-    else
-        input=$*
-    fi
+    readinput 'Append' "$@" # Accept empty input here; it's harmless.
     case "$input" in
+      '')                       appendspace=;;
       [$SENTENCE_DELIMITERS]*)  appendspace=;;
       *)                        appendspace=" ";;
     esac
@@ -1199,7 +1203,7 @@ case $action in
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             getNewtodo "$item"
             echo "$item $newtodo"
-    fi
+        fi
     else
         die "TODO: Error appending task $item."
     fi

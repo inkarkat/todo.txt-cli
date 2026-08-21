@@ -5,6 +5,7 @@ test_description='Bash help completion functionality
 This test checks todo_completion of actions for usage help.
 '
 . ./actions-test-lib.sh
+. ./completion-test-lib.sh
 . ./test-lib.sh
 
 make_action zany
