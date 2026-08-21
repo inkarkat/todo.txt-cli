@@ -378,18 +378,23 @@ die()
     exit 1
 }
 
-confirm()
+getKeyFromUser()
 {
-    [ "$TODOTXT_FORCE" = 0 ] || return 0
-
-    local readArgs=(-e -r)
+    local readArgs=()
     if [ -n "${BASH_VERSINFO:-}" ] && ((BASH_VERSINFO[0] > 4 || (BASH_VERSINFO[0] == 4 && BASH_VERSINFO[1] >= 1) )); then
         readArgs+=(-N 1)    # Bash 4.1+ supports -N nchars
     fi
+    [ $# -eq 0 ] || readArgs+=(-p "${1:?}")
     local answer
-    read -rp "${1:?}? (y/n) " "${readArgs[@]}" answer
-    echo
-    [ "$answer" = "y" ]
+    read -e -r "${readArgs[@]}" answer
+    echo >&2
+    printf %s "$answer"
+}
+
+confirm()
+{
+    [ "$TODOTXT_FORCE" = 0 ] || return 0
+    [ "$(getKeyFromUser "${1:?}? (y/n) ")" = 'y' ]
 }
 
 cleaninput()
@@ -1076,7 +1081,7 @@ hasCustomAction()
     return 1
 }
 
-export -f cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
+export -f getKeyFromUser confirm cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
