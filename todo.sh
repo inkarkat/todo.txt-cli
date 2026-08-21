@@ -397,6 +397,19 @@ confirm()
     [ "$(getKeyFromUser "${1:?}? (y/n) ")" = 'y' ]
 }
 
+readinput()
+{
+    local readArgs=()
+    [ -n "${1?}" ] && readArgs=(-p "${1}: ")
+    shift
+
+    if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
+        read -e -r "${readArgs[@]}" input
+    else
+        input=$*
+    fi
+    [ -n "$input" ]
+}
 cleaninput()
 {
     # Parameters:    When $1 = "for sed", performs additional escaping for use
@@ -1081,7 +1094,7 @@ hasCustomAction()
     return 1
 }
 
-export -f getKeyFromUser confirm cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
+export -f getKeyFromUser confirm readinput cleaninput getPrefix getTodo getNewtodo filtercommand _list listWordsWithSigil getPadding _format die
 
 # == HANDLE ACTION ==
 action=$(printf "%s\n" "$ACTION" | tr '[:upper:]' '[:lower:]')
@@ -1112,24 +1125,14 @@ fi
 # Only run if $action isn't found in .todo.actions.d
 case $action in
 "add" | "a")
-    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Add: " -e -r input
-    else
-        [ -z "$2" ] && die "usage: $TODO_SH add \"TODO ITEM\""
-        shift
-        input=$*
-    fi
+    shift
+    readinput 'Add' "$@" || die "usage: $TODO_SH add \"TODO ITEM\""
     _addto "$TODO_FILE" "$input"
     ;;
 
 "addm")
-    if [[ -z "$2" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Add: " -e -r input
-    else
-        [ -z "$2" ] && die "usage: $TODO_SH addm \"TODO ITEM\""
-        shift
-        input=$*
-    fi
+    shift
+    readinput 'Add' "$@" || die "usage: $TODO_SH addm \"TODO ITEM\""
 
     # Set Internal Field Seperator as newline so we can
     # loop across multiple lines
@@ -1164,11 +1167,7 @@ case $action in
     shift; item=$1; shift
     getTodo "$item"
 
-    if [[ -z "$1" && $TODOTXT_FORCE = 0 ]]; then
-        read -p "Append: " -e -r input
-    else
-        input=$*
-    fi
+    readinput 'Append' "$@" # Accept empty input here; it's harmless.
     case "$input" in
       [$SENTENCE_DELIMITERS]*)  appendspace=;;
       *)                        appendspace=" ";;
@@ -1179,7 +1178,7 @@ case $action in
         if [ "$TODOTXT_VERBOSE" -gt 0 ]; then
             getNewtodo "$item"
             echo "$item $newtodo"
-    fi
+        fi
     else
         die "TODO: Error appending task $item."
     fi
