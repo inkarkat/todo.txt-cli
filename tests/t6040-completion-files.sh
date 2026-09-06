@@ -6,7 +6,7 @@ This test checks todo_completion of files in TODO_DIR.
 '
 . ./test-lib.sh
 
-> dummy.txt
+: > dummy.txt
 readonly FILES='done.txt dummy.txt report.txt todo.txt'
 test_todo_completion 'all files after addto' 'todo.sh addto ' "$FILES"
 test_todo_completion 'files beginning with d after addto' 'todo.sh addto d' 'done.txt dummy.txt'
