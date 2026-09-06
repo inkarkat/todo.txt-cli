@@ -419,7 +419,7 @@ test_init_todo () {
 	mkdir -p "$root"
 	cd "$root" || error "Cannot setup todo dir in $root"
 	# Initialize the configuration file. Carefully quoted.
-	sed -e 's|TODO_DIR=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' "$SRC_DIRECTORY/todo.cfg" > todo.cfg
+	sed -e 's|: \${TODO_DIR:=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' "$SRC_DIRECTORY/todo.cfg" > todo.cfg
 
 	# Install latest todo.sh
 	mkdir bin
