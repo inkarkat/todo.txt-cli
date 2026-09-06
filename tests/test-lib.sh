@@ -41,7 +41,7 @@ unset CDPATH
 # Protect ourselves from using predefined TODOTXT_CFG_FILE
 unset TODOTXT_CFG_FILE $(set|sed '/^TODOTXT_/!d;s/=.*//')
 # To prevent any damage if someone has still those exported somehow in his env:
-unset TODO_FILE DONE_FILE REPORT_FILE TMP_FILE
+unset TODO_DIR TODO_FILE DONE_FILE REPORT_FILE TMP_FILE
 
 # Each test should start with something like this, after copyright notices:
 #
@@ -418,8 +418,8 @@ test_init_todo () {
 	root="$1"
 	mkdir -p "$root"
 	cd "$root" || error "Cannot setup todo dir in $root"
-	# Initialize the configuration file. Carefully quoted.
-	sed -e 's|: \${TODO_DIR:=.*$|TODO_DIR="'"$TEST_DIRECTORY/$test"'"|' "$SRC_DIRECTORY/todo.cfg" > todo.cfg
+	# Provide the configuration file.
+	cp -- "$SRC_DIRECTORY/todo.cfg" todo.cfg
 
 	# Install latest todo.sh
 	mkdir bin
