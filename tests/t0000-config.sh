@@ -25,12 +25,12 @@ Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_descripti
 Try 'todo.sh -h' for more information.
 EOF
 
-cat > test.cfg <<EOF
+cat > test.cfg <<'EOF'
 export TODO_DIR=.
-export TODO_FILE="\$TODO_DIR/todo.txt"
-export DONE_FILE="\$TODO_DIR/done.txt"
-export REPORT_FILE="\$TODO_DIR/report.txt"
-export TMP_FILE="\$TODO_DIR/todo.tmp"
+export TODO_FILE="$TODO_DIR/todo.txt"
+export DONE_FILE="$TODO_DIR/done.txt"
+export REPORT_FILE="$TODO_DIR/report.txt"
+export TMP_FILE="$TODO_DIR/todo.tmp"
 touch used_config
 EOF
 
