@@ -1094,11 +1094,10 @@ _format()
                 printf "%s\n", end_clr
             }
           '  \
-        | sed '
-            s/'"${HIDE_PROJECTS_SUBSTITUTION:-^}"'//g
-            s/'"${HIDE_CONTEXTS_SUBSTITUTION:-^}"'//g
-            s/'"${HIDE_CUSTOM_SUBSTITUTION:-^}"'//g
-          '                                                   \
+        | sed \
+            -e "s/${HIDE_PROJECTS_SUBSTITUTION:-^}//g" \
+            -e "s/${HIDE_CONTEXTS_SUBSTITUTION:-^}//g" \
+            -e "s/${HIDE_CUSTOM_SUBSTITUTION:-^}//g" \
         | eval ${TODOTXT_FINAL_FILTER}                        \
     )
     [ -n "$filtered_items" ] && echo "$filtered_items"
