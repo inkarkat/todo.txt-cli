@@ -62,6 +62,13 @@ test_todo_session 'checking HIDE_CUSTOM_SUBSTITUTION' <<EOF
 1 ccc xxx is line should be ird.
 --
 TODO: 3 of 3 tasks shown
+
+>>> HIDE_CUSTOM_SUBSTITUTION='[tT]his' todo.sh ls
+2 aaa zzz line should be first.
+3 bbb yyy line should be second.
+1 ccc xxx line should be third.
+--
+TODO: 3 of 3 tasks shown
 EOF
 
 #

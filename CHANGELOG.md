@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - `TODOTXT_DATE_FORMAT_PATTERN` and `TODOTXT_SIGIL_{BEFORE,VALID,AFTER}_PATTERN`
   are now in extended regexp format; the `+` sigil passed to
   `listWordsWithSigil()` now needs to be escaped as `\+`
+- `HIDE_CUSTOM_SUBSTITUTION` is now in extended regexp format and matches
+  (parts of) individual words instead of the whole line
 
 ### Fixed
 - The `replace` doesn't allow an empty replacement any longer; use `del` / `rm`

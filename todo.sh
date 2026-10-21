@@ -1010,6 +1010,7 @@ _format()
         | awk  \
             -v "hideContextNames=${HIDE_CONTEXT_NAMES:-0}" \
             -v "hideProjectNames=${HIDE_PROJECT_NAMES:-0}" \
+            -v "hideCustomSubstitution=${HIDE_CUSTOM_SUBSTITUTION//\\/\\\\}" \
             -v "dateFormatPattern=${TODOTXT_DATE_FORMAT_PATTERN//\\/\\\\}" \
             -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
             -v "sigilValidPattern=${TODOTXT_SIGIL_VALID_PATTERN//\\/\\\\}" \
@@ -1074,6 +1075,13 @@ _format()
                 for (i = 1; i <= len; ++i) {
                     if (i == 1 && words[i] ~ /^[0-9]+$/ ) {
                         printf "%s", precedingWhitespace num_beg words[i] num_end
+                    } else if (hideCustomSubstitution != "" && words[i] ~ hideCustomSubstitution) {
+                        gsub(hideCustomSubstitution, "", words[i])
+                        if (words[i] == "") {
+                            precedingWhitespace = ""
+                        } else {
+                            printf "%s", precedingWhitespace words[i]
+                        }
                     } else if (highlightSigil("[+]", words[i], prj_beg, prj_end, hideProjectNames)) {
                     } else if (highlightSigil("@", words[i], ctx_beg, ctx_end, hideContextNames)) {
                     } else if (words[i] ~ "^" dateFormatPattern "$") {
@@ -1089,8 +1097,6 @@ _format()
                 printf "%s\n", end_clr
             }
           '  \
-        | sed \
-            -e "s/${HIDE_CUSTOM_SUBSTITUTION:-^}//g" \
         | eval ${TODOTXT_FINAL_FILTER}                        \
     )
     [ -n "$filtered_items" ] && echo "$filtered_items"
