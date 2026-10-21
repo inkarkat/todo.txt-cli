@@ -14,20 +14,20 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   allows to customize the format of creation and completion dates ([#457])
 - Dates and metadata can now be suppressed via new `-D` / `-M` flags,
   complementing the existing `-@` / `-+` / `-P` flags for context names /
-  project names / priority labels.
+  project names / priority labels. ([#505])
 
 ### Changed
 - `TODOTXT_DATE_FORMAT_PATTERN` and `TODOTXT_SIGIL_{BEFORE,VALID,AFTER}_PATTERN`
   are now in extended regexp format; the `+` sigil passed to
-  `listWordsWithSigil()` now needs to be escaped as `\+`
+  `listWordsWithSigil()` now needs to be escaped as `\+` ([#505])
 - `HIDE_CUSTOM_SUBSTITUTION` is now in extended regexp format and matches
-  (parts of) individual words instead of the whole line
+  (parts of) individual words instead of the whole line ([#505])
 
 ### Fixed
 - The `replace` doesn't allow an empty replacement any longer; use `del` / `rm`
   instead ([#504])
 - Metadata highlighting now supports non-ASCII characters and enforces the
-  standard's insistence on a single colon.
+  standard's insistence on a single colon. ([#505])
 
 ## [2.14.0] - 2026-09-01
 
@@ -585,3 +585,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 [#495]: https://github.com/todotxt/todo.txt-cli/pull/495
 [#496]: https://github.com/todotxt/todo.txt-cli/pull/496
 [#504]: https://github.com/todotxt/todo.txt-cli/pull/504
+[#505]: https://github.com/todotxt/todo.txt-cli/pull/505
