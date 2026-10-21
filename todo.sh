@@ -584,21 +584,16 @@ export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
 while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
+  # The HIDE_* flags start at zero (false); increment it to one
+  #   (true) the first time this flag is seen. Each time the flag
+  #   is seen after that, increment it again so that an even
+  #   number shows context names and an odd number hides context
+  #   names.
   case $Option in
     '@')
-        # HIDE_CONTEXT_NAMES starts at zero (false); increment it to one
-        #   (true) the first time this flag is seen. Each time the flag
-        #   is seen after that, increment it again so that an even
-        #   number shows context names and an odd number hides context
-        #   names.
         : $(( HIDE_CONTEXT_NAMES++ ))
         ;;
     '+')
-        # HIDE_PROJECT_NAMES starts at zero (false); increment it to one
-        #   (true) the first time this flag is seen. Each time the flag
-        #   is seen after that, increment it again so that an even
-        #   number shows project names and an odd number hides project
-        #   names.
         : $(( HIDE_PROJECT_NAMES++ ))
         ;;
     a)
@@ -633,11 +628,6 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         OVR_TODOTXT_PLAIN=1
         ;;
     P)
-        # HIDE_PRIORITY_LABELS starts at zero (false); increment it to one
-        #   (true) the first time this flag is seen. Each time the flag
-        #   is seen after that, increment it again so that an even
-        #   number shows priority labels and an odd number hides priority
-        #   labels.
         : $(( HIDE_PRIORITY_LABELS++ ))
         ;;
     t)
