@@ -1104,11 +1104,11 @@ listWordsWithSigil()
     FILE=$TODO_FILE
     [ -n "$TODOTXT_SOURCEVAR" ] && eval "FILE=$TODOTXT_SOURCEVAR"
     eval "$(filtercommand 'cat "${FILE[@]}"' '' "$@")" \
-        | grep -o "[^ ]*${sigil}[^ ]\\+" \
+        | grep -o "[^ ]*[${sigil}][^ ]\\+" \
         | sed -n -E \
             -e "s#^${TODOTXT_SIGIL_BEFORE_PATTERN//#/\\#}##" \
             -e "s#${TODOTXT_SIGIL_AFTER_PATTERN//#/\\#}\$##" \
-            -e "/^${sigil}${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
+            -e "/^[${sigil}]${TODOTXT_SIGIL_VALID_PATTERN//\//\\/}$/p" \
         | sort -u
 }
 export -f listWordsWithSigil
@@ -1451,7 +1451,7 @@ case $action in
 
 "listproj" | "lsprj")
     shift
-    listWordsWithSigil '\+' "$@"
+    listWordsWithSigil '+' "$@"
     ;;
 
 "listpri" | "lsp")
