@@ -1029,6 +1029,13 @@ _format()
                 gsub(/\\+033/, "\033", color)
                 return color
             }
+            function highlightSigil(sigil, word, colorBegin, colorEnd) {
+                if (word ~ "^" sigil ".*[A-Za-z0-9_]$") {
+                    printf "%s", colorBegin word colorEnd
+                    return 1
+                }
+                return 0
+            }
             {
                 clr = ""
                 if (match($0, /^[0-9]+ x /)) {
@@ -1064,10 +1071,8 @@ _format()
                 for (i = 1; i <= len; ++i) {
                     if (i == 1 && words[i] ~ /^[0-9]+$/ ) {
                         printf "%s", num_beg words[i] num_end
-                    } else if (words[i] ~ /^[+].*[A-Za-z0-9_]$/) {
-                        printf "%s", prj_beg words[i] prj_end
-                    } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
-                        printf "%s", ctx_beg words[i] ctx_end
+                    } else if (highlightSigil("[+]", words[i], prj_beg, prj_end)) {
+                    } else if (highlightSigil("@", words[i], ctx_beg, ctx_end)) {
                     } else if (words[i] ~ "^" dateFormatPattern "$") {
                         printf "%s", dat_beg words[i] dat_end
                     } else if (words[i] ~ /^[A-Za-z0-9]+:[^ ]+$/) {
