@@ -592,13 +592,6 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         #   number shows context names and an odd number hides context
         #   names.
         : $(( HIDE_CONTEXT_NAMES++ ))
-        if (( HIDE_CONTEXT_NAMES % 2 == 0 )); then
-            # Zero or even value -- show context names
-            unset HIDE_CONTEXTS_SUBSTITUTION
-        else
-            # One or odd value -- hide context names
-            export HIDE_CONTEXTS_SUBSTITUTION='[[:space:]]@[[:graph:]]\{1,\}'
-        fi
         ;;
     '+')
         # HIDE_PROJECT_NAMES starts at zero (false); increment it to one
@@ -607,13 +600,6 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         #   number shows project names and an odd number hides project
         #   names.
         : $(( HIDE_PROJECT_NAMES++ ))
-        if (( HIDE_PROJECT_NAMES % 2 == 0 )); then
-            # Zero or even value -- show project names
-            unset HIDE_PROJECTS_SUBSTITUTION
-        else
-            # One or odd value -- hide project names
-            export HIDE_PROJECTS_SUBSTITUTION='[[:space:]][+][[:graph:]]\{1,\}'
-        fi
         ;;
     a)
         OVR_TODOTXT_AUTO_ARCHIVE=0
@@ -1022,6 +1008,8 @@ _format()
           ' \
         | eval "${TODOTXT_SORT_COMMAND}" \
         | awk  \
+            -v "hideContextNames=${HIDE_CONTEXT_NAMES:-0}" \
+            -v "hideProjectNames=${HIDE_PROJECT_NAMES:-0}" \
             -v "dateFormatPattern=${TODOTXT_DATE_FORMAT_PATTERN//\\/\\\\}" \
             -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
             -v "sigilValidPattern=${TODOTXT_SIGIL_VALID_PATTERN//\\/\\\\}" \
@@ -1032,7 +1020,7 @@ _format()
                 gsub(/\\+033/, "\033", color)
                 return color
             }
-            function highlightSigil(sigil, word, colorBegin, colorEnd,      a, beforeWord, afterWord) {
+            function highlightSigil(sigil, word, colorBegin, colorEnd, hideSigilWord,      a, beforeWord, afterWord) {
                 if (match(word, "^(" sigilBeforePattern ")" sigil sigilValidPattern sigilAfterPattern "$", a)) {
                     beforeWord = a[1]
                     word = substr(word, length(beforeWord) + 1)
@@ -1041,7 +1029,11 @@ _format()
                         afterWord = substr(word, length(word) + 1)
                     }
 
-                    printf "%s", beforeWord colorBegin word colorEnd afterWord
+                    if (hideSigilWord % 2) {
+                        precedingWhitespace = ""
+                    } else {
+                        printf "%s", precedingWhitespace beforeWord colorBegin word colorEnd afterWord
+                    }
                     return 1
                 }
                 return 0
@@ -1077,26 +1069,27 @@ _format()
                 gsub(/[ \t][ \t]*/, "\n&\n")
                 len = split($0, words, /\n/)
 
+                precedingWhitespace = ""
                 printf "%s", clr
                 for (i = 1; i <= len; ++i) {
                     if (i == 1 && words[i] ~ /^[0-9]+$/ ) {
-                        printf "%s", num_beg words[i] num_end
-                    } else if (highlightSigil("[+]", words[i], prj_beg, prj_end)) {
-                    } else if (highlightSigil("@", words[i], ctx_beg, ctx_end)) {
+                        printf "%s", precedingWhitespace num_beg words[i] num_end
+                    } else if (highlightSigil("[+]", words[i], prj_beg, prj_end, hideProjectNames)) {
+                    } else if (highlightSigil("@", words[i], ctx_beg, ctx_end, hideContextNames)) {
                     } else if (words[i] ~ "^" dateFormatPattern "$") {
-                        printf "%s", dat_beg words[i] dat_end
+                        printf "%s", precedingWhitespace dat_beg words[i] dat_end
                     } else if (words[i] ~ /^[^:[:space:]]+:[^:[:space:]]+$/) {
-                        printf "%s", met_beg words[i] met_end
+                        printf "%s", precedingWhitespace met_beg words[i] met_end
+                    } else if (words[i] ~ /^[[:space:]]+$/) {
+                        precedingWhitespace = words[i]
                     } else {
-                        printf "%s", words[i]
+                        printf "%s", precedingWhitespace words[i]
                     }
                 }
                 printf "%s\n", end_clr
             }
           '  \
         | sed \
-            -e "s/${HIDE_PROJECTS_SUBSTITUTION:-^}//g" \
-            -e "s/${HIDE_CONTEXTS_SUBSTITUTION:-^}//g" \
             -e "s/${HIDE_CUSTOM_SUBSTITUTION:-^}//g" \
         | eval ${TODOTXT_FINAL_FILTER}                        \
     )
