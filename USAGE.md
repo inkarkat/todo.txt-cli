@@ -197,7 +197,7 @@ optionally allow chars preceding +p / @c
 ### TODOTXT\_SIGIL\_VALID\_PATTERN
 
 ```shell
-TODOTXT_SIGIL_VALID_PATTERN='[^ ]\{1,\}'
+TODOTXT_SIGIL_VALID_PATTERN='[^ ]{1,}'
 ```
 
 
