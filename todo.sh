@@ -639,13 +639,6 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
         #   number shows priority labels and an odd number hides priority
         #   labels.
         : $(( HIDE_PRIORITY_LABELS++ ))
-        if (( HIDE_PRIORITY_LABELS % 2 == 0 )); then
-            # Zero or even value -- show priority labels
-            unset HIDE_PRIORITY_SUBSTITUTION
-        else
-            # One or odd value -- hide priority labels
-            export HIDE_PRIORITY_SUBSTITUTION="([A-Z])[[:space:]]"
-        fi
         ;;
     t)
         OVR_TODOTXT_DATE_ON_ADD=1
@@ -851,8 +844,8 @@ _applyPlainMode()
 }
 export -f _applyPlainMode
 
-[[ -n "$HIDE_PROJECTS_SUBSTITUTION" ]] && COLOR_PROJECT="$NONE"
-[[ -n "$HIDE_CONTEXTS_SUBSTITUTION" ]] && COLOR_CONTEXT="$NONE"
+(( ${HIDE_PROJECTS_NAMES:-0} % 2 == 0 )) || COLOR_PROJECT="$NONE"
+(( ${HIDE_CONTEXT_NAMES:-0} % 2 == 0 )) || COLOR_CONTEXT="$NONE"
 
 _addto()
 {
@@ -1008,6 +1001,7 @@ _format()
           ' \
         | eval "${TODOTXT_SORT_COMMAND}" \
         | awk  \
+            -v "hidePriorityLabels=${HIDE_PRIORITY_LABELS:-0}" \
             -v "hideContextNames=${HIDE_CONTEXT_NAMES:-0}" \
             -v "hideProjectNames=${HIDE_PROJECT_NAMES:-0}" \
             -v "hideCustomSubstitution=${HIDE_CUSTOM_SUBSTITUTION//\\/\\\\}" \
@@ -1049,7 +1043,7 @@ _format()
                 } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
                     clr = (clr ? clr : highlight("PRI_X"))
-                    if (ENVIRON["HIDE_PRIORITY_SUBSTITUTION"] != "") {
+                    if (isHidden(hidePriorityLabels)) {
                         $0 = substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)
                     }
                 }
