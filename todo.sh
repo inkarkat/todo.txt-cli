@@ -590,64 +590,29 @@ while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
   #   number shows context names and an odd number hides context
   #   names.
   case $Option in
-    '@')
-        : $(( HIDE_CONTEXT_NAMES++ ))
-        ;;
-    '+')
-        : $(( HIDE_PROJECT_NAMES++ ))
-        ;;
-    a)
-        OVR_TODOTXT_AUTO_ARCHIVE=0
-        ;;
-    A)
-        OVR_TODOTXT_AUTO_ARCHIVE=1
-        ;;
-    c)
-        OVR_TODOTXT_PLAIN=0
-        ;;
-    d)
-        TODOTXT_CFG_FILE=$OPTARG
-        ;;
-    f)
-        OVR_TODOTXT_FORCE=1
-        ;;
-    h)
-        # Short-circuit option parsing and forward to the action.
+    '@') : $(( HIDE_CONTEXT_NAMES++ ));;
+    '+') : $(( HIDE_PROJECT_NAMES++ ));;
+    a) OVR_TODOTXT_AUTO_ARCHIVE=0;;
+    A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
+    c) OVR_TODOTXT_PLAIN=0;;
+    d) TODOTXT_CFG_FILE=$OPTARG;;
+    f) OVR_TODOTXT_FORCE=1;;
+    h)  # Short-circuit option parsing and forward to the action.
         # Cannot just invoke shorthelp() because we need the configuration
         # processed to locate the add-on actions directory.
         set -- '-h' 'shorthelp'
         OPTIND=2
         ;;
-    n)
-        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0
-        ;;
-    N)
-        OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1
-        ;;
-    p)
-        OVR_TODOTXT_PLAIN=1
-        ;;
-    P)
-        : $(( HIDE_PRIORITY_LABELS++ ))
-        ;;
-    t)
-        OVR_TODOTXT_DATE_ON_ADD=1
-        ;;
-    T)
-        OVR_TODOTXT_DATE_ON_ADD=0
-        ;;
-    v)
-        : $(( TODOTXT_VERBOSE++ ))
-        ;;
-    V)
-        version
-        ;;
-    x)
-        OVR_TODOTXT_DISABLE_FILTER=1
-        ;;
-    *)
-        usage
-        ;;
+    n) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0;;
+    N) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1;;
+    p) OVR_TODOTXT_PLAIN=1;;
+    P) : $(( HIDE_PRIORITY_LABELS++ ));;
+    t) OVR_TODOTXT_DATE_ON_ADD=1;;
+    T) OVR_TODOTXT_DATE_ON_ADD=0;;
+    v) : $(( TODOTXT_VERBOSE++ ));;
+    V) version;;
+    x) OVR_TODOTXT_DISABLE_FILTER=1;;
+    *) usage;;
   esac
 done
 shift $((OPTIND - 1))
