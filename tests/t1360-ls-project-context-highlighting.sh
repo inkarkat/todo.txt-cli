@@ -145,14 +145,14 @@ TODO: 2 of 2 tasks shown
 EOF
 test_todo_session 'highlighting allowing parentheses around projects and contexts' <<EOF
 >>> TODOTXT_SIGIL_BEFORE_PATTERN='\({0,1}' TODOTXT_SIGIL_AFTER_PATTERN='\){0,1}' todo.sh -d "$TEST_TODO_LABEL_COLORS" ls
-[0;32m1 (B) [2m+math[0m[0;32m w:+calculus ([1m@school[0m[0;32m or [1m@home)[0m[0;32m integrate [1m@x[0m[0;32m and [1m@y[0m[0;32m[0m
+[0;32m1 (B) [2m+math[0m[0;32m w:+calculus ([1m@school[0m[0;32m or [1m@home[0m[0;32m) integrate [1m@x[0m[0;32m and [1m@y[0m[0;32m[0m
 2 say thanks and give a [2m+1[0m to [1m@GinaTrapani[0m w:@OtherContributors
 --
 TODO: 2 of 2 tasks shown
 EOF
 test_todo_session 'highlighting with all customizations for projects and contexts combined' <<EOF
 >>> TODOTXT_SIGIL_VALID_PATTERN='.{2,}' TODOTXT_SIGIL_BEFORE_PATTERN='(w:){0,1}(\(){0,1}' TODOTXT_SIGIL_AFTER_PATTERN='\){0,1}' todo.sh -d "$TEST_TODO_LABEL_COLORS" ls
-[0;32m1 (B) [2m+math[0m[0;32m w:[2m+calculus[0m[0;32m ([1m@school[0m[0;32m or [1m@home)[0m[0;32m integrate @x and @y[0m
+[0;32m1 (B) [2m+math[0m[0;32m w:[2m+calculus[0m[0;32m ([1m@school[0m[0;32m or [1m@home[0m[0;32m) integrate @x and @y[0m
 2 say thanks and give a +1 to [1m@GinaTrapani[0m w:[1m@OtherContributors[0m
 --
 TODO: 2 of 2 tasks shown
