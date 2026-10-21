@@ -1085,7 +1085,7 @@ _format()
                     } else if (highlightSigil("@", words[i], ctx_beg, ctx_end)) {
                     } else if (words[i] ~ "^" dateFormatPattern "$") {
                         printf "%s", dat_beg words[i] dat_end
-                    } else if (words[i] ~ /^[A-Za-z0-9]+:[^ ]+$/) {
+                    } else if (words[i] ~ /^[^:[:space:]]+:[^:[:space:]]+$/) {
                         printf "%s", met_beg words[i] met_end
                     } else {
                         printf "%s", words[i]

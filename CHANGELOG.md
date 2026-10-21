@@ -21,6 +21,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - The `replace` doesn't allow an empty replacement any longer; use `del` / `rm`
   instead ([#504])
+- Metadata highlighting now supports non-ASCII characters and enforces the
+  standard's insistence on a single colon.
 
 ## [2.14.0] - 2026-09-01
 
