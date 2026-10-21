@@ -967,7 +967,7 @@ _format()
             s/^ /0/;
           ' \
         | eval "${TODOTXT_SORT_COMMAND}" \
-        | awk  \
+        | awk \
             -v "hidePriorityLabels=${HIDE_PRIORITY_LABELS:-0}" \
             -v "hideContextNames=${HIDE_CONTEXT_NAMES:-0}" \
             -v "hideProjectNames=${HIDE_PROJECT_NAMES:-0}" \
@@ -988,12 +988,14 @@ _format()
                 return (hideFlag % 2)
             }
             function highlightSigil(sigil, word, colorBegin, colorEnd, hideSigilWord,      a, beforeWord, afterWord) {
-                if (match(word, "^(" sigilBeforePattern ")" sigil sigilValidPattern sigilAfterPattern "$", a)) {
-                    beforeWord = a[1]
+                if (word ~ "^" sigilBeforePattern "[" sigil "]" sigilValidPattern sigilAfterPattern "$" \
+                        && match(word, "^" sigilBeforePattern "[" sigil "]")) \
+                {
+                    beforeWord = substr(word, RSTART, RLENGTH - length(sigil))
                     word = substr(word, length(beforeWord) + 1)
-                    if (sigilAfterPattern != "" && match(word, "^(" sigil sigilValidPattern ")" sigilAfterPattern "$", a)) {
-                        word = a[1]
-                        afterWord = substr(word, length(word) + 1)
+                    if (sigilAfterPattern != "" && match(word, sigilAfterPattern "$")) {
+                        afterWord = substr(word, RSTART, RLENGTH)
+                        word = substr(word, 1, length(word) - length(afterWord))
                     }
 
                     if (isHidden(hideSigilWord)) {
@@ -1054,7 +1056,7 @@ _format()
                         } else {
                             printf "%s", precedingWhitespace words[i]
                         }
-                    } else if (highlightSigil("[+]", words[i], prj_beg, prj_end, hideProjectNames)) {
+                    } else if (highlightSigil("+", words[i], prj_beg, prj_end, hideProjectNames)) {
                     } else if (highlightSigil("@", words[i], ctx_beg, ctx_end, hideContextNames)) {
                     } else if ((i == 3 + dateOffset || i == 3 + dateOffset + (hasDoneDate ? 2 : 0)) && words[i] ~ "^" dateFormatPattern "$") {
                         if (isHidden(hideDates)) {
