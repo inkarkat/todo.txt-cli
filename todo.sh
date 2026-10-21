@@ -1021,7 +1021,9 @@ _format()
             s/^ /0/;
           ' \
         | eval "${TODOTXT_SORT_COMMAND}" \
-        | awk '
+        | awk  \
+            -v "dateFormatPattern=${TODOTXT_DATE_FORMAT_PATTERN//\\/\\\\}" \
+          '
             function highlight(colorVar, color) {
                 color = ENVIRON[colorVar]
                 gsub(/\\+033/, "\033", color)
@@ -1066,7 +1068,7 @@ _format()
                         printf "%s", prj_beg words[i] prj_end
                     } else if (words[i] ~ /^[@].*[A-Za-z0-9_]$/) {
                         printf "%s", ctx_beg words[i] ctx_end
-                    } else if (words[i] ~ /^(19|20)[0-9][0-9]-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$/) {
+                    } else if (words[i] ~ "^" dateFormatPattern "$") {
                         printf "%s", dat_beg words[i] dat_end
                     } else if (words[i] ~ /^[A-Za-z0-9]+:[^ ]+$/) {
                         printf "%s", met_beg words[i] met_end
