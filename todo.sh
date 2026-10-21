@@ -993,13 +993,19 @@ _format()
             }
             {
                 clr = ""
+                dateOffset = 0
+                hasDoneDate = 0
                 if (match($0, /^[0-9]+ x /)) {
                     clr = highlight("COLOR_DONE")
+                    dateOffset = 2
+                    hasDoneDate = 1
                 } else if (match($0, /^[0-9]+ \([A-Z]\) /)) {
                     clr = highlight("PRI_" substr($0, RSTART + RLENGTH - 3, 1))
                     clr = (clr ? clr : highlight("PRI_X"))
                     if (isHidden(hidePriorityLabels)) {
                         $0 = substr($0, 1, RLENGTH - 4) substr($0, RSTART + RLENGTH)
+                    } else {
+                        dateOffset = 2
                     }
                 }
                 end_clr = (clr ? highlight("DEFAULT") : "")
@@ -1036,7 +1042,7 @@ _format()
                         }
                     } else if (highlightSigil("[+]", words[i], prj_beg, prj_end, hideProjectNames)) {
                     } else if (highlightSigil("@", words[i], ctx_beg, ctx_end, hideContextNames)) {
-                    } else if (words[i] ~ "^" dateFormatPattern "$") {
+                    } else if ((i == 3 + dateOffset || i == 3 + dateOffset + (hasDoneDate ? 2 : 0)) && words[i] ~ "^" dateFormatPattern "$") {
                         printf "%s", precedingWhitespace dat_beg words[i] dat_end
                     } else if (words[i] ~ /^[^:[:space:]]+:[^:[:space:]]+$/) {
                         printf "%s", precedingWhitespace met_beg words[i] met_end

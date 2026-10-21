@@ -8,9 +8,12 @@ This test checks the highlighting (with colors) of dates, item numbers and metad
 
 # Tasks with dates and metadata
 cat > todo.txt <<EOF
+(A) 2018-11-11 prioritized task with date
 2018-11-11 task with date
+x 2018-11-12 2018-11-11 done task with dates
+2018-11-12 2018-11-11 not yet done task with two dates
 task with metadata due:2018-12-31
-task without date and without metadata
+task without date except inline 2018-12-22 and without metadata
 EOF
 
 # config file specifying COLOR_PROJECT and COLOR_CONTEXT
@@ -26,20 +29,26 @@ EOF
 
 test_todo_session 'highlighting for date, item numbers and metadata' <<'EOF'
 >>> todo.sh -d "$TEST_TODO_LABEL_COLORS" ls
-[0;34m1[0m [0;31m2018-11-11[0m task with date
-[0;34m2[0m task with metadata [0;32mdue:2018-12-31[0m
-[0;34m3[0m task without date and without metadata
+[1;33m[0;34m1[0m[1;33m (A) [0;31m2018-11-11[0m[1;33m prioritized task with date[0m
+[0;34m2[0m [0;31m2018-11-11[0m task with date
+[0;34m4[0m [0;31m2018-11-12[0m 2018-11-11 not yet done task with two dates
+[0;34m5[0m task with metadata [0;32mdue:2018-12-31[0m
+[0;34m6[0m task without date except inline 2018-12-22 and without metadata
+[0;37m[0;34m3[0m[0;37m x [0;31m2018-11-12[0m[0;37m [0;31m2018-11-11[0m[0;37m done task with dates[0m
 --
-TODO: 3 of 3 tasks shown
+TODO: 6 of 6 tasks shown
 EOF
 
 test_todo_session 'suppressing highlighting for date, item numbers and metadata' <<'EOF'
 >>> todo.sh -p -d "$TEST_TODO_LABEL_COLORS" ls
-1 2018-11-11 task with date
-2 task with metadata due:2018-12-31
-3 task without date and without metadata
+1 (A) 2018-11-11 prioritized task with date
+2 2018-11-11 task with date
+4 2018-11-12 2018-11-11 not yet done task with two dates
+5 task with metadata due:2018-12-31
+6 task without date except inline 2018-12-22 and without metadata
+3 x 2018-11-12 2018-11-11 done task with dates
 --
-TODO: 3 of 3 tasks shown
+TODO: 6 of 6 tasks shown
 EOF
 
 cat > todo.txt <<EOF
