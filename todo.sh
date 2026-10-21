@@ -1023,15 +1023,25 @@ _format()
         | eval "${TODOTXT_SORT_COMMAND}" \
         | awk  \
             -v "dateFormatPattern=${TODOTXT_DATE_FORMAT_PATTERN//\\/\\\\}" \
+            -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
+            -v "sigilValidPattern=${TODOTXT_SIGIL_VALID_PATTERN//\\/\\\\}" \
+            -v "sigilAfterPattern=${TODOTXT_SIGIL_AFTER_PATTERN//\\/\\\\}" \
           '
             function highlight(colorVar, color) {
                 color = ENVIRON[colorVar]
                 gsub(/\\+033/, "\033", color)
                 return color
             }
-            function highlightSigil(sigil, word, colorBegin, colorEnd) {
-                if (word ~ "^" sigil ".*[A-Za-z0-9_]$") {
-                    printf "%s", colorBegin word colorEnd
+            function highlightSigil(sigil, word, colorBegin, colorEnd,      a, beforeWord, afterWord) {
+                if (match(word, "^(" sigilBeforePattern ")" sigil sigilValidPattern sigilAfterPattern "$", a)) {
+                    beforeWord = a[1]
+                    word = substr(word, length(beforeWord) + 1)
+                    if (sigilAfterPattern != "" && match(word, "^(" sigil sigilValidPattern ")" sigilAfterPattern "$", a)) {
+                        word = a[1]
+                        afterWord = substr(word, length(word) + 1)
+                    }
+
+                    printf "%s", beforeWord colorBegin word colorEnd afterWord
                     return 1
                 }
                 return 0
