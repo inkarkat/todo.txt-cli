@@ -14,9 +14,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   allows to customize the format of creation and completion dates ([#457])
 
 ### Changed
-- `TODOTXT_SIGIL_{BEFORE,VALID,AFTER}_PATTERN` are now in extended regexp
-  format; the `+` sigil passed to `listWordsWithSigil()` now needs to be
-  escaped as `\+`
+- `TODOTXT_DATE_FORMAT_PATTERN` and `TODOTXT_SIGIL_{BEFORE,VALID,AFTER}_PATTERN`
+  are now in extended regexp format; the `+` sigil passed to
+  `listWordsWithSigil()` now needs to be escaped as `\+`
 
 ### Fixed
 - The `replace` doesn't allow an empty replacement any longer; use `del` / `rm`

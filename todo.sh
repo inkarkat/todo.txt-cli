@@ -497,30 +497,30 @@ replaceOrPrepend()
   if [ "${todo:0:2}" = 'x ' ]; then
     # Retrieve existing done date and date on add
     local -r doneMarker='x '
-    local -r firstTwoFieldsExpr='\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
+    local -r firstTwoFieldsExpr='('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
   else
     # Retrieve existing priority and prepended date
     local -r doneMarker=''
-    local -r firstTwoFieldsExpr='\((.) \)\{0,1\}\('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' \)\{0,1\}'
+    local -r firstTwoFieldsExpr='(\(.\) ){0,1}('"${TODOTXT_DATE_FORMAT_PATTERN//\//\\/}"' ){0,1}'
   fi
-  originalField1=$(echo "$todo" | sed -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
+  originalField1=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\1/")
   field1="$originalField1"
-  originalField2=$(echo "$todo" | sed -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
+  originalField2=$(echo "$todo" | sed -E -e "s/^${doneMarker}${firstTwoFieldsExpr}.*/\\2/")
   field2="$originalField2"
   if [ "$action" = "replace" ]; then
-    replacementField2="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
+    replacementField2="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\2/")"
     if [ -n "$replacementField2" ]; then
       # If the replaced text starts with a [field1 +] field2, it will replace
       # the existing field2, too.
       field2="$replacementField2"
     fi
-    replacementField1="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
+    replacementField1="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}.*/\\1/")"
     if [ -n "$replacementField1" ]; then
       # If the replaced text starts with field1, it will replace
       # the existing field1, too.
       field1="$replacementField1"
     fi
-    input="$(echo "$input" | sed -e "s/^${firstTwoFieldsExpr}//")"
+    input="$(echo "$input" | sed -E -e "s/^${firstTwoFieldsExpr}//")"
   fi
 
   # Temporarily remove any existing first two fields, perform the change
@@ -690,7 +690,7 @@ TODOTXT_FORCE=${TODOTXT_FORCE:-0}
 TODOTXT_PRESERVE_LINE_NUMBERS=${TODOTXT_PRESERVE_LINE_NUMBERS:-1}
 TODOTXT_AUTO_ARCHIVE=${TODOTXT_AUTO_ARCHIVE:-1}
 TODOTXT_DATE_FORMAT=${TODOTXT_DATE_FORMAT:-%Y-%m-%d}
-TODOTXT_DATE_FORMAT_PATTERN=${TODOTXT_DATE_FORMAT_PATTERN:-'[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}'}
+TODOTXT_DATE_FORMAT_PATTERN=${TODOTXT_DATE_FORMAT_PATTERN:-'[0-9]{4}-[0-9]{2}-[0-9]{2}'}
 TODOTXT_DATE_ON_ADD=${TODOTXT_DATE_ON_ADD:-0}
 TODOTXT_PRIORITY_ON_ADD=${TODOTXT_PRIORITY_ON_ADD:-}
 TODOTXT_DEFAULT_ACTION=${TODOTXT_DEFAULT_ACTION:-}

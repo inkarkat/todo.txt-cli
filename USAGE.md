@@ -170,7 +170,7 @@ customize creation/completion date format
 ### TODOTXT\_DATE\_FORMAT\_PATTERN
 
 ```shell
-TODOTXT_DATE_FORMAT_PATTERN='[0-9]\{4\}-[0-9]\{2\}-[0-9]\{2\}'
+TODOTXT_DATE_FORMAT_PATTERN='[0-9]{4}-[0-9]{2}-[0-9]{2}'
 ```
 
 
