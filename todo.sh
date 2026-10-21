@@ -1021,6 +1021,9 @@ _format()
                 gsub(/\\+033/, "\033", color)
                 return color
             }
+            function isHidden(hideFlag) {
+                return (hideFlag % 2)
+            }
             function highlightSigil(sigil, word, colorBegin, colorEnd, hideSigilWord,      a, beforeWord, afterWord) {
                 if (match(word, "^(" sigilBeforePattern ")" sigil sigilValidPattern sigilAfterPattern "$", a)) {
                     beforeWord = a[1]
@@ -1030,7 +1033,7 @@ _format()
                         afterWord = substr(word, length(word) + 1)
                     }
 
-                    if (hideSigilWord % 2) {
+                    if (isHidden(hideSigilWord)) {
                         precedingWhitespace = ""
                     } else {
                         printf "%s", precedingWhitespace beforeWord colorBegin word colorEnd afterWord
