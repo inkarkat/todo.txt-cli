@@ -87,6 +87,36 @@ test_todo_session 'suppressing display of projects' <<'EOF'
 TODO: 9 of 9 tasks shown
 EOF
 
+cat > todo.txt <<EOF
+2024-01-01 абв где ёжз +ИКЛ
+икл мно прс @ТУФ
+2025-11-27 tell about bug in todo.sh +абвГдеЁжз
+@иклМноПрс
+να ξαπλώσω στο μπάνιο και να φωνάξω +εύρηκα
+:) @---
+2025-11-26 @+++
+++++ @@@@
+Visit Bolshoi theater +Москва
+购买蔬菜 +首都
+Catch white nights in June 2026 +Санкт-Петербург
+EOF
+test_todo_session 'highlighting for non-ASCII contexts and projects' <<'EOF'
+>>> TODOTXT_SORT_COMMAND=cat todo.sh -d "$TEST_TODO_LABEL_COLORS" ls
+01 2024-01-01 абв где ёжз [2m+ИКЛ[0m
+02 икл мно прс [1m@ТУФ[0m
+03 2025-11-27 tell about bug in todo.sh [2m+абвГдеЁжз[0m
+04 [1m@иклМноПрс[0m
+05 να ξαπλώσω στο μπάνιο και να φωνάξω [2m+εύρηκα[0m
+06 :) [1m@---[0m
+07 2025-11-26 [1m@+++[0m
+08 [2m++++[0m [1m@@@@[0m
+09 Visit Bolshoi theater [2m+Москва[0m
+10 购买蔬菜 [2m+首都[0m
+11 Catch white nights in June 2026 [2m+Санкт-Петербург[0m
+--
+TODO: 11 of 11 tasks shown
+EOF
+
 # check highlighting with custom sigil patterns
 cat > todo.txt <<EOF
 (B) +math w:+calculus (@school or @home) integrate @x and @y
