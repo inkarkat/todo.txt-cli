@@ -16,11 +16,13 @@ EOF
 # config file specifying COLOR_PROJECT and COLOR_CONTEXT
 #
 TEST_TODO_LABEL_COLORS=todo-colors.cfg
-cat todo.cfg > "$TEST_TODO_LABEL_COLORS"
-
-echo "export COLOR_DATE='\\\\033[0;31m'" >>"$TEST_TODO_LABEL_COLORS"
-echo "export COLOR_META='\\\\033[0;32m'" >>"$TEST_TODO_LABEL_COLORS"
-echo "export COLOR_NUMBER='\\\\033[0;34m'" >>"$TEST_TODO_LABEL_COLORS"
+{
+    cat todo.cfg - <<'EOF'
+export COLOR_DATE='\\033[0;31m'
+export COLOR_META='\\033[0;32m'
+export COLOR_NUMBER='\\033[0;34m'
+EOF
+} > "$TEST_TODO_LABEL_COLORS"
 
 test_todo_session 'highlighting for date, item numbers and metadata' <<'EOF'
 >>> todo.sh -d "$TEST_TODO_LABEL_COLORS" ls
