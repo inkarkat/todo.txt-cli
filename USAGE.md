@@ -5,7 +5,7 @@
 # [todo.txt-cli](http://todotxt.org) Usage
 
 ```
-  Usage: todo.sh [-+@aAcfhnNpPtTvVx] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-+@aAcDfhMnNpPtTvVx] [-d todo_config] action [task_number] [task_description]
 ```
 
 ## Options
@@ -30,6 +30,10 @@ Use a configuration file other than one of the defaults:
 * ./todo.cfg
 * /etc/todo/config
 
+### -D
+
+Hide added / done dates in list output.  Use twice to show
+dates (default).
 ### -f
 
 Forces actions without confirmation or interactive input
@@ -49,6 +53,10 @@ Don't auto-archive tasks automatically on completion
 ### -A
 
 Auto-archive tasks automatically on completion
+### -M
+
+Hide metadata (key:value) in list output.  Use twice to
+show metadata (default).
 ### -n
 
 Don't preserve line numbers; automatically remove blank lines

@@ -12,6 +12,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   single subdirectory is not enough to distribute custom actions ([#496])
 - The new `TODOTXT_DATE_FORMAT` and `TODOTXT_DATE_FORMAT_PATTERN` configuration
   allows to customize the format of creation and completion dates ([#457])
+- Dates and metadata can now be suppressed via new `-D` / `-M` flags,
+  complementing the existing `-@` / `-+` / `-P` flags for context names /
+  project names / priority labels.
 
 ### Changed
 - `TODOTXT_DATE_FORMAT_PATTERN` and `TODOTXT_SIGIL_{BEFORE,VALID,AFTER}_PATTERN`

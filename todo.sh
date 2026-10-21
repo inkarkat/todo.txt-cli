@@ -25,7 +25,7 @@ TODO_SH=$(basename "$0")
 TODO_FULL_SH="$0"
 export TODO_SH TODO_FULL_SH
 
-readonly GETOPTS_OPTIONS='+@aAcd:fhnNpPtTvVx'
+readonly GETOPTS_OPTIONS='+@aAcd:DfhMnNpPtTvVx'
 readonly GETOPTS_NONARG_OPTIONS="${GETOPTS_OPTIONS//?:/}"   # Options followed by a colon have an argument.
 readonly oneline_usage="$TODO_SH [-${GETOPTS_NONARG_OPTIONS}] [-d todo_config] action [task_number] [task_description]"
 
@@ -122,6 +122,9 @@ help()
 		    -d CONFIG_FILE
 		        Use a configuration file other than one of the defaults:
 $indentedJoinedConfigFileLocations
+		    -D
+		        Hide added / done dates in list output.  Use twice to show
+		        dates (default).
 		    -f
 		        Forces actions without confirmation or interactive input
 		    -h
@@ -135,6 +138,9 @@ $indentedJoinedConfigFileLocations
 		        Don't auto-archive tasks automatically on completion
 		    -A
 		        Auto-archive tasks automatically on completion
+		    -M
+		        Hide metadata (key:value) in list output.  Use twice to
+		        show metadata (default).
 		    -n
 		        Don't preserve line numbers; automatically remove blank lines
 		        on task deletion
@@ -598,6 +604,7 @@ while getopts ":$GETOPTS_OPTIONS" Option; do
     A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
     c) OVR_TODOTXT_PLAIN=0;;
     d) TODOTXT_CFG_FILE=$OPTARG;;
+    D) : $(( HIDE_DATES++ ));;
     f) OVR_TODOTXT_FORCE=1;;
     h)  # Short-circuit option parsing and forward to the action.
         # Cannot just invoke shorthelp() because we need the configuration
@@ -605,6 +612,7 @@ while getopts ":$GETOPTS_OPTIONS" Option; do
         set -- '-h' 'shorthelp'
         OPTIND=2
         ;;
+    M) : $(( HIDE_META++ ));;
     n) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=0;;
     N) OVR_TODOTXT_PRESERVE_LINE_NUMBERS=1;;
     p) OVR_TODOTXT_PLAIN=1;;
@@ -803,6 +811,8 @@ export -f _applyPlainMode
 
 (( ${HIDE_PROJECTS_NAMES:-0} % 2 == 0 )) || COLOR_PROJECT="$NONE"
 (( ${HIDE_CONTEXT_NAMES:-0} % 2 == 0 )) || COLOR_CONTEXT="$NONE"
+(( ${HIDE_DATES:-0} % 2 == 0 )) || COLOR_DATE="$NONE"
+(( ${HIDE_META:-0} % 2 == 0 )) || COLOR_META="$NONE"
 
 _addto()
 {
@@ -961,6 +971,8 @@ _format()
             -v "hidePriorityLabels=${HIDE_PRIORITY_LABELS:-0}" \
             -v "hideContextNames=${HIDE_CONTEXT_NAMES:-0}" \
             -v "hideProjectNames=${HIDE_PROJECT_NAMES:-0}" \
+            -v "hideDates=${HIDE_DATES:-0}" \
+            -v "hideMeta=${HIDE_META:-0}" \
             -v "hideCustomSubstitution=${HIDE_CUSTOM_SUBSTITUTION//\\/\\\\}" \
             -v "dateFormatPattern=${TODOTXT_DATE_FORMAT_PATTERN//\\/\\\\}" \
             -v "sigilBeforePattern=${TODOTXT_SIGIL_BEFORE_PATTERN//\\/\\\\}" \
@@ -1045,9 +1057,17 @@ _format()
                     } else if (highlightSigil("[+]", words[i], prj_beg, prj_end, hideProjectNames)) {
                     } else if (highlightSigil("@", words[i], ctx_beg, ctx_end, hideContextNames)) {
                     } else if ((i == 3 + dateOffset || i == 3 + dateOffset + (hasDoneDate ? 2 : 0)) && words[i] ~ "^" dateFormatPattern "$") {
-                        printf "%s", precedingWhitespace dat_beg words[i] dat_end
+                        if (isHidden(hideDates)) {
+                            precedingWhitespace = ""
+                        } else {
+                            printf "%s", precedingWhitespace dat_beg words[i] dat_end
+                        }
                     } else if (words[i] ~ /^[^:[:space:]]+:[^:[:space:]]+$/) {
-                        printf "%s", precedingWhitespace met_beg words[i] met_end
+                        if (isHidden(hideMeta)) {
+                            precedingWhitespace = ""
+                        } else {
+                            printf "%s", precedingWhitespace met_beg words[i] met_end
+                        }
                     } else if (words[i] ~ /^[[:space:]]+$/) {
                         precedingWhitespace = words[i]
                     } else {
