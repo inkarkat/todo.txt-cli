@@ -5,7 +5,7 @@
 # [todo.txt-cli](http://todotxt.org) Usage
 
 ```
-  Usage: todo.sh [-fhpantvV] [-d todo_config] action [task_number] [task_description]
+  Usage: todo.sh [-fhpcnNaAtTvVx+@P] [-d todo_config] action [task_number] [task_description]
 ```
 
 ## Options

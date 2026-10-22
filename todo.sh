@@ -25,7 +25,9 @@ TODO_SH=$(basename "$0")
 TODO_FULL_SH="$0"
 export TODO_SH TODO_FULL_SH
 
-oneline_usage="$TODO_SH [-fhpantvV] [-d todo_config] action [task_number] [task_description]"
+readonly GETOPTS_OPTIONS='fhpcnNaAtTvVx+@Pd:'
+readonly GETOPTS_NONARG_OPTIONS="${GETOPTS_OPTIONS//?:/}"   # Options followed by a colon have an argument.
+readonly oneline_usage="$TODO_SH [-${GETOPTS_NONARG_OPTIONS}] [-d todo_config] action [task_number] [task_description]"
 
 # Assumption: The in-place argument is the first
 # Assumption: Only a single file is processed with sed
@@ -583,7 +585,7 @@ OVR_TODOTXT_FINAL_FILTER="$TODOTXT_FINAL_FILTER"
 export GREP_OPTIONS=""
 
 # == PROCESS OPTIONS ==
-while getopts ":fhpcnNaAtTvVx+@Pd:" Option; do
+while getopts ":$GETOPTS_OPTIONS" Option; do
   # The HIDE_* flags start at zero (false); increment it to one
   #   (true) the first time this flag is seen. Each time the flag
   #   is seen after that, increment it again so that an even
