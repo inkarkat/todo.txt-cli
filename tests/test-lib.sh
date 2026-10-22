@@ -646,7 +646,7 @@ unset XDG_CONFIG_HOME
 export TODO_ACTIONS_DIR="$HOME/.todo/actions"
 
 # Common test data.
-readonly TODOTXT_ONELINE_USAGE='Usage: todo.sh [-fhpcnNaAtTvVx+@P] [-d todo_config] action [task_number] [task_description]'
+readonly TODOTXT_ONELINE_USAGE='Usage: todo.sh [-+@aAcfhnNpPtTvVx] [-d todo_config] action [task_number] [task_description]'
 
 this_test=${0##*/}
 this_test=${this_test%%-*}

@@ -25,7 +25,7 @@ TODO_SH=$(basename "$0")
 TODO_FULL_SH="$0"
 export TODO_SH TODO_FULL_SH
 
-readonly GETOPTS_OPTIONS='fhpcnNaAtTvVx+@Pd:'
+readonly GETOPTS_OPTIONS='+@aAcd:fhnNpPtTvVx'
 readonly GETOPTS_NONARG_OPTIONS="${GETOPTS_OPTIONS//?:/}"   # Options followed by a colon have an argument.
 readonly oneline_usage="$TODO_SH [-${GETOPTS_NONARG_OPTIONS}] [-d todo_config] action [task_number] [task_description]"
 
@@ -592,8 +592,8 @@ while getopts ":$GETOPTS_OPTIONS" Option; do
   #   number shows context names and an odd number hides context
   #   names.
   case $Option in
-    '@') : $(( HIDE_CONTEXT_NAMES++ ));;
     '+') : $(( HIDE_PROJECT_NAMES++ ));;
+    '@') : $(( HIDE_CONTEXT_NAMES++ ));;
     a) OVR_TODOTXT_AUTO_ARCHIVE=0;;
     A) OVR_TODOTXT_AUTO_ARCHIVE=1;;
     c) OVR_TODOTXT_PLAIN=0;;
