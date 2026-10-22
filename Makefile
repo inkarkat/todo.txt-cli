@@ -133,7 +133,8 @@ README.md: todo.sh todo.cfg
 		&& literalOnelineUsage="$$ONELINE_USAGE" \
 		&& literalOnelineUsage="$${literalOnelineUsage//\\/\\\\}" \
 		&& literalOnelineUsage="$${literalOnelineUsage//&/\\&}" \
-		&& sed -i -e "s#^todo\.sh \[-.*\$$#$${literalOnelineUsage//#/\\#}#" README.md
+		&& sed -i.bak -e "s#^todo\.sh \[-.*\$$#$${literalOnelineUsage//#/\\#}#" README.md \
+		&& rm -f README.md.bak
 USAGE.md: todo.sh todo.cfg usageToMarkdown
 	unset $${!TODO_@} $${!TODOTXT_@}; HOME=$(CURDIR) XDG_CONFIG_HOME='' TODOTXT_VERBOSE=2 ./$< help | sed -e "s|$(CURDIR)|~|g" | ./usageToMarkdown > $@
 
